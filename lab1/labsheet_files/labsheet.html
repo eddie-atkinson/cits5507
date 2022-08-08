@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>CS&amp;SE - CITS3402 High Performance Computing</title>
+</head>
+
+<body vlink="#0000ff" link="#0000ff" bgcolor="#ffffff">
+
+<table width="90%" cellspacing="0" cellpadding="0"><tbody><tr>
+    <!--<td><img src="/images/fecmbanner-new.gif" alt="Faculty banner"></td>-->
+    <td nowrap="nowrap" align="center">
+	<h3>&nbsp;<br>CITS3402 High Performance Computing<br>
+	    Laboratory Sheet 1</h3>
+    </td>
+</tr></tbody></table>
+
+<h3>CITS3402 High Performance Computing</h3>
+
+<hr size="1" noshade="noshade">
+
+<h3><a name="Palo">How to compile and run C programs in your computer</a></h3>
+<ul>
+<li> You can write C programs using a simple editor if you have a linux 
+or MacOS system. You can also use IDEs (Integrated Development 
+Environments), however you have to resolve any issues with IDEs on your 
+own. This is a masters level unit and I would expect a high level of 
+independence from you. </li>
+<li> If you have a Windows system, there are ways of using linux from the Windows OS, for example <a href="https://www.onmsft.com/how-to/install-ubuntu-on-windows-10-or-windows-11"> here </a> and there are many other suggestions on the Internet that you can explore. </li>
+<li> The simple way to compile a C program from command line is to use 
+the gcc compiler from the command line. For example, if your program 
+file is <tt>myProg.c</tt>, you can use <tt>gcc myProg.c</tt> to generate an executable file called <tt>a.out</tt> and execute it. You can also give a specific name to your executable file, for example <tt>gcc -o myProg myProg.c</tt> will create an executable called <tt>myProg</tt>.
+</li><li> Don't despair if you don't know the C language. I will cover 
+it in the lectures quickly, and would expect you to pick up based on 
+your experiences with other programming languages. You can also look up 
+the lecture notes for week2 from the "Lectures" folder. 
+
+</li></ul>
+
+<h3><a name="Palo">Timing of C programs</a></h3>
+
+<ul>
+<li>When we try to improve the run time performance of our programs, we have to 
+know how much time our program takes to execute. C has several ways of 
+determing the execution time of programs. Your first task is to 
+read <a href="https://stackoverflow.com/questions/5248915/execution-time-of-c-program">this discussion</a> and understand how you can determine the execution 
+time of your C programs. 
+
+<p> While <i> stackoverflow</i> is a very useful discussion site for C 
+programming, it is your responsibility to check whether the discussed 
+codes are correct or not. You can also use other sources from the internet 
+for your understanding. </p></li>
+
+<li> Your computer is so fast that you need to do a lot of computations 
+for the time to be measurable. First try to write simple loops that execute 
+many times,e.g., start with several hundred thousand iterations and increase 
+the number of iterations gradually. You need not have any statements inside the loop. </li>
+
+<li> Now plot the running times against the number of iterations in a graph. 
+You can use Microsoft Excel. Does the time increase linearly? In other words, 
+is the increase in time proportional to the number of iterations? </li>
+
+<li> Now write a program that does something non-trivial inside a loop. For 
+example, declare a large enough array and store random floating point numbers 
+between 0 and 1 in the array. Now add these floating point numbers in the loop. You can see <a href="https://stackoverflow.com/questions/822323/how-to-generate-a-random-number-in-c">this discussion</a> for random number generation. </li>
+
+<li> Write the bubble sort algorithm in C and check timing with larger and 
+larger input sizes. There are many sources that you can look up for the bubble sort algorithm, starting from the <a href="https://en.wikipedia.org/wiki/Bubble_sort">Wikipedia article</a>. </li>
+
+<li>Write the quicksort algorithm in C and check timing with larger and 
+larger input sizes. There are again many sources that you can look up for 
+the quick sort algorithm, starting from 
+<a href="https://www.cquestions.com/2008/01/c-program-for-quick-sort.html">
+here</a>. However, you have to modify this code to input large arrays. </li>
+
+<li> There are many other sorting algorithms like <i>merge sort</i> and 
+<i>insertion sort</i>. Search the internet for C codes for these 
+algorithms and do a timing analysis with varying input sizes. Which 
+algorithm is the fastest? 
+</li>
+<li><b>Note:</b> There is a limit of how large an array you can allocate
+in a C program statically. This is because there is a limit on the size 
+of an activation record on the stack (you can watch the video on "Stack 
+and Heap" that I have posted). Most of the time you will get a run-time 
+"segmentation fault" error if you allocate too large an array. You have 
+to experiment and see how large an array you can allocate without 
+segmentation fault. This situation can be avoided if one allocates 
+arrays dynamically, since that storage is allocated in the heap. </li>
+
+</ul>
+
+<!--<h3><a name="Palo">Timing of FORTRAN programs</a></h3>
+
+<ul>
+<li>When we try to improve the run time performance of our programs, we have to
+know how much time our program takes to execute. FORTRAN has several ways of
+determing the execution time of programs. Your first task is to
+read <a href="https://gcc.gnu.org/onlinedocs/gfortran/CPU_005fTIME.html">this discussion</a> and understand how you can determine the execution
+time of your FORTRAN programs. </li>
+
+<li> Your computer is so fast that you need to do a lot of computations
+for the time to be measurable. First try to write simple loops that execute
+many times,e.g., start with several hundred thousand iterations and increase
+the number of iterations gradually. You need not have any statements inside the loop. </li>
+
+<li> Now plot the running times against the number of iterations in a graph.
+You can use Microsoft Excel. Does the time increase linearly? In other words,
+is the increase in time proportional to the number of iterations? </li>
+
+<li> Now write a program that does something non-trivial inside a loop. For
+example, declare a large enough array and store random floating point numbers
+between 0 and 1 in the array. Now add these floating point numbers in the loop. You can see <a href="https://gcc.gnu.org/onlinedocs/gfortran/RANDOM_005fNUMBER.html">this discussion</a> for random number generation. </li>
+
+<li> Sorting is the process of arranging a set of numbers in either ascending or descending order. <a href="https://en.wikipedia.org/wiki/Bubble_sort">Bubble sort</a> is one of the simplest (and so efficient) algorithms for sorting. Your task is to understand the bubble sort algorithm and test its performance on larger and larger input sizes.  
+<a href="https://stackoverflow.com/questions/19550621/fortran-bubble-sort-algorithm">Here is an implementation</a> of Bubble sort in FORTRAN which you can use.
+One of the ways of generating large inputs is to generate random numbers. </li>
+
+<li><b>Note:</b> See the note above for C programmers. I expect this will not be a problem with the Gnu Fortran compiler, as the Gnu Fortran compiler allocates automatic (or static) arrays in the heap.</li>
+
+</ul>
+-->
+
+
+<p><b>Amitava Datta<br>
+July 2022</b>
+  
+  
+</p><p>
+
+</p><hr size="1" noshade="noshade">
+
+<table width="100%"><tbody><tr>
+<td width="1"><a href="https://www.csse.uwa.edu.au/"><img src="deptlogo.gif" alt="Visit the UWA Computer Science home page" border="0" align="left"></a>
+</td>
+<td nowrap="nowrap">Department of Computer Science &amp; Software Engineering<br>
+    The University of Western Australia<br>
+    Crawley, Western Australia, 6009.<br>
+    Phone: +61 8 9380 2716 - Fax: +61 8 9380 1089.<br>
+    CRICOS provider code 00126G<br>
+</td>
+<td>
+<a href="https://validator.w3.org/check/referer"><img src="valid-html401.png" alt="Valid HTML 4.01!" width="88" height="31" border="0"></a>
+</td>
+</tr></tbody></table>
+
+
+
+
+</body></html>
