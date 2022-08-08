@@ -27,7 +27,10 @@ void testSort(char* algorithmName, int* (*f)(int*, int)) {
     TestCase testCase = testCases[i];
     int failed = runTestCase(&testCase, f);
     if (failed) {
-      printf(C_RED("Failed test case: ") " %s\n\n", testCase.name);
+      printf(C_RED("Failed test case: ") " %s\n", testCase.name);
+      printf("Input arr: ");
+      printArr(testCase.input, testCase.length);
+      printf("\n");
     } else {
       printf(C_GREEN("Passed test case: ") " %s\n\n", testCase.name);
     }

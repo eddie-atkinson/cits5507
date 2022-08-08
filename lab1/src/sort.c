@@ -42,61 +42,66 @@ int* bubbleSort(int* const inputArr, int arrSize) {
   return sortedArr;
 }
 
-void copyArr(int* const inputArr, int* const sortedArr, int arrSize) {
+void copyArr(int* const src, int* const dest, int arrSize) {
   for (int i = 0; i < arrSize; ++i) {
-    inputArr[i] = sortedArr[i];
+    dest[i] = src[i];
   }
 }
 
-void merge(int left, int right, int* const inputArr, int length) {
-  int k = left;
-  bool leftRemaining = true;
-  bool rightRemaining = true;
-  int leftIdx = left;
-  int rightIdx = right;
-  printArrSlice(inputArr, left, length);
-  printArrSlice(inputArr, right, length);
-  while (leftRemaining && rightRemaining) {
-    int leftVal = inputArr[leftIdx];
-    int rightVal = inputArr[rightIdx];
+void merge(int* const inputArr, int left, int middle, int right) {
+  int leftLength = middle - left + 1;
+  int rightLength = right - middle;
 
-    if (leftVal < rightVal && leftRemaining) {
+  int leftArr[leftLength];
+  int rightArr[rightLength];
+
+  for (int i = 0; i < leftLength; ++i) {
+    leftArr[i] = inputArr[i + left];
+  }
+  for (int i = 0; i < rightLength; ++i) {
+    rightArr[i] = inputArr[i + middle + 1];
+  }
+
+  int leftIdx = 0;
+  int rightIdx = 0;
+  int k = left;
+
+  while (leftIdx < leftLength && rightIdx < rightLength) {
+    int leftVal = leftArr[leftIdx];
+    int rightVal = rightArr[rightIdx];
+    if (leftVal < rightVal) {
       inputArr[k] = leftVal;
       ++leftIdx;
     } else {
       inputArr[k] = rightVal;
       ++rightIdx;
     }
-
-    leftRemaining = leftIdx < left + length;
-    rightRemaining = rightIdx < right + length;
     ++k;
+  }
+  while (leftIdx < leftLength) {
+    inputArr[k] = leftArr[leftIdx];
+    ++k;
+    ++leftIdx;
+  }
+  while (rightIdx < rightLength) {
+    inputArr[k] = rightArr[rightIdx];
+    ++k;
+    ++rightIdx;
   }
 }
 
-void doMergeSort(int leftIdx, int rightIdx, int* const inputArr, int length) {
-  // Sub array is trivially sorted
-  if (length == 1) {
-    return;
+void doMergeSort(int* const inputArr, int left, int right) {
+  if (left < right) {
+    int middle = left + (right - left) / 2;
+    doMergeSort(inputArr, left, middle);
+    doMergeSort(inputArr, middle + 1, right);
+    merge(inputArr, left, middle, right);
   }
-
-  int leftArrLeftIdx = leftIdx;
-  int leftArrRightIdx = rightIdx / 2;
-
-  int rightArrLeftIdx = leftArrRightIdx + 1;
-  int rightArrRightIdx = rightIdx;
-
-  doMergeSort(leftArrLeftIdx, leftArrRightIdx, inputArr,
-              leftArrRightIdx - leftArrLeftIdx);
-  doMergeSort(rightArrLeftIdx, rightArrRightIdx, inputArr,
-              rightArrRightIdx - rightArrLeftIdx);
-
-  merge(leftIdx, rightIdx, inputArr, length);
 }
 
 int* mergeSort(int* const inputArr, int arrSize) {
   int* sortedArr = malloc(sizeof(int) * arrSize);
   copyArr(inputArr, sortedArr, arrSize);
-  doMergeSort(0, arrSize - 1, sortedArr, arrSize);
+  doMergeSort(sortedArr, 0, arrSize - 1);
   return sortedArr;
 }
