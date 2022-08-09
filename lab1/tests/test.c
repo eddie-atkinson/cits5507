@@ -46,5 +46,6 @@ void testSort(char* algorithmName, int* (*f)(int*, int)) {
 int main() {
   testSort("Bubble Sort", bubbleSort);
   testSort("Merge Sort", mergeSort);
+  testSort("Quick Sort", quickSort);
   return EXIT_SUCCESS;
 }

@@ -3,14 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// I know the math stdlib is weird cross platform, this is much easier
-int min(int x, int y) {
-  if (x > y) {
-    return x;
-  }
-  return y;
-}
-
 void printArr(int* arr, int arrSize) {
   for (int i = 0; i < arrSize; ++i) {
     printf("%d ", arr[i]);
@@ -40,12 +32,6 @@ int* bubbleSort(int* const inputArr, int arrSize) {
     }
   }
   return sortedArr;
-}
-
-void copyArr(int* const src, int* const dest, int arrSize) {
-  for (int i = 0; i < arrSize; ++i) {
-    dest[i] = src[i];
-  }
 }
 
 void merge(int* const inputArr, int left, int middle, int right) {
@@ -101,7 +87,41 @@ void doMergeSort(int* const inputArr, int left, int right) {
 
 int* mergeSort(int* const inputArr, int arrSize) {
   int* sortedArr = malloc(sizeof(int) * arrSize);
-  copyArr(inputArr, sortedArr, arrSize);
+  memcpy(sortedArr, inputArr, arrSize * sizeof(int));
   doMergeSort(sortedArr, 0, arrSize - 1);
+  return sortedArr;
+}
+
+void swapIndices(int* const inputArr, int indexOne, int indexTwo) {
+  int swap = inputArr[indexOne];
+  inputArr[indexOne] = inputArr[indexTwo];
+  inputArr[indexTwo] = swap;
+}
+
+int partition(int* const inputArr, int low, int high) {
+  int pivotVal = inputArr[low];
+  int leftWall = low;
+  for (int i = low + 1; i <= high; ++i) {
+    if (inputArr[i] < pivotVal) {
+      swapIndices(inputArr, i, leftWall);
+      ++leftWall;
+    }
+  }
+  swapIndices(inputArr, low, leftWall);
+  return leftWall;
+}
+
+void doQuickSort(int* const inputArr, int low, int high) {
+  if (low < high) {
+    int pivot = partition(inputArr, low, high);
+    doQuickSort(inputArr, low, pivot);
+    doQuickSort(inputArr, pivot + 1, high);
+  }
+}
+
+int* quickSort(int* const inputArr, int arrSize) {
+  int* sortedArr = malloc(sizeof(int) * arrSize);
+  memcpy(sortedArr, inputArr, arrSize * sizeof(int));
+  doQuickSort(sortedArr, 0, arrSize - 1);
   return sortedArr;
 }
