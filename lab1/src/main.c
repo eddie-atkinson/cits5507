@@ -7,7 +7,8 @@
 #include "sort.h"
 
 #define N_LOOPS 20
-
+// Use a consistent random seed so that results are comparable
+#define RANDOM_SEED 42
 /*
 Q1.
 Your computer is so fast that you need to do a lot of computations for the time
@@ -94,29 +95,20 @@ void checkTrivialLoops() {
 // example, declare a large enough array and store random floating point numbers
 // between 0 and 1 in the array. Now add these floating point numbers in the
 // loop.
+// NOTE: I just did large numbers, much more useful for later exercises
 
-int generateRandomNumber(void) {
-  static bool seedHasBeenSet = false;
-  if (!seedHasBeenSet) {
-    srand(time(NULL));
-    seedHasBeenSet = true;
-  }
-  return rand() / RAND_MAX;
-}
-
-int* generateRandomNumberArray(int arrSize) {
+int* generateRandomNumberArray(int arrSize, int initialSeed) {
+  srand(initialSeed);
   int* arr = malloc(sizeof(int) * arrSize);
-  int* ptr = arr;
   for (int i = 0; i < arrSize; ++i) {
-    *ptr = generateRandomNumber();
-    ++ptr;
+    arr[i] = rand();
   }
   return arr;
 }
 
 void runNonTrivialLoop(int nLoops) {
   int sum = 0;
-  int* randomNums = generateRandomNumberArray(nLoops);
+  int* randomNums = generateRandomNumberArray(nLoops, RANDOM_SEED);
   for (int i = 0; i < nLoops; ++i) {
     sum += randomNums[i];
   }
@@ -163,14 +155,7 @@ void checkNonTrivialLoops() {
 // larger input sizes. There are many sources that you can look up for the
 // bubble sort algorithm.
 
-void bubbleSortRandomArray(int arrSize) {
-  int* arr = generateRandomNumberArray(arrSize);
-  int* sortedArr = bubbleSort(arr, arrSize);
-  free(arr);
-  free(sortedArr);
-}
-
-void checkBubbleSort() {
+void checkSortingAlg(int* (*sortingFunc)(int*, int), char* algorithmName) {
   clock_t begin;
   clock_t end;
   double time_spent;
@@ -181,33 +166,56 @@ void checkBubbleSort() {
   for (int i = 0; i < N_LOOPS; ++i) {
     // Take 2^i as the loop length
     int arrSize = 2 << i;
+    int* arr = generateRandomNumberArray(arrSize, RANDOM_SEED);
 
-    // Run loop and time execution
+    // Run sorting alg and time execution
     begin = clock();
-    bubbleSortRandomArray(arrSize);
+    int* sortedArr = sortingFunc(arr, arrSize);
     end = clock();
+    free(arr);
+    free(sortedArr);
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
     runTimes[i] = malloc(sizeof(RunTime));
     runTimes[i]->nIter = arrSize;
     runTimes[i]->runTime = time_spent;
 
-    printf("CPU Execution time for array of length %d was: %fs\n", arrSize,
-           time_spent);
+    printf(
+        "CPU Execution time for array of length %d with algorithm %s was: "
+        "%fs\n",
+        arrSize, algorithmName, time_spent);
   }
 
-  // Write results to CSV for analysis
-  writeRunTimesCsv(runTimes, N_LOOPS, "./results/bubble_sort_loop.csv");
+  // Isn't C an absolute peach?
+  char* filePathPrefix = "./results/";
+  int suffixLength = strlen(".csv") + strlen(algorithmName);
+  char* fullFilePath =
+      malloc((strlen(filePathPrefix) + suffixLength) * sizeof(char));
+  sprintf(fullFilePath, "%s%s%s", filePathPrefix, algorithmName, ".csv");
 
+  // Write results to CSV for analysis
+  writeRunTimesCsv(runTimes, N_LOOPS, fullFilePath);
   // Free the memory we allocated along the way
   for (int i = 0; i < N_LOOPS; ++i) {
     free(runTimes[i]);
   }
   free(runTimes);
 }
+void checkSortingAlgs() {
+  // checkSortingAlg(bubbleSort, "bubble_sort");
+  // printf("\n");
+  checkSortingAlg(mergeSort, "merge_sort");
+  printf("\n");
+  checkSortingAlg(quickSort, "quick_sort");
+  printf("\n");
+}
 
 int main(int argc, char** argv) {
-  checkTrivialLoops();
-  checkNonTrivialLoops();
+  // checkTrivialLoops();
+  // printf("\n");
+  // checkNonTrivialLoops();
+  printf("\n");
+  checkSortingAlgs();
+
   return EXIT_SUCCESS;
 }

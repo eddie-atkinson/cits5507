@@ -32,6 +32,8 @@ int oddNumberOfElements[] = {9, 1, 7, 3, 0};
 int oddNumberOfElementsSorted[] = {0, 1, 3, 7, 9};
 int dupes[] = {2, 2, 3, 5, 5, 1};
 int dupesSorted[] = {1, 2, 2, 3, 5, 5};
+int typical[] = {5, 1, 72, 7, 1, 8};
+int typicalSorted[] = {1, 1, 5, 7, 8, 72};
 
 TestCase testCases[] = {
     {1, trivial, trivial, "trivial"},
@@ -40,5 +42,5 @@ TestCase testCases[] = {
     {5, oddNumberOfElements, oddNumberOfElementsSorted,
      "odd number of elements"},
     {6, dupes, dupesSorted, "duplicate entries"},
-
+    {6, typical, typicalSorted, "typical case"},
 };

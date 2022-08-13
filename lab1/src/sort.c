@@ -98,24 +98,29 @@ void swapIndices(int* const inputArr, int indexOne, int indexTwo) {
   inputArr[indexTwo] = swap;
 }
 
+// Basic divide and conquer partition alg
+// TODO: Implement median of three or similar approach to improve performance
+// here
 int partition(int* const inputArr, int low, int high) {
-  int pivotVal = inputArr[low];
-  int leftWall = low;
-  for (int i = low + 1; i <= high; ++i) {
-    if (inputArr[i] < pivotVal) {
-      swapIndices(inputArr, i, leftWall);
-      ++leftWall;
+  int x = inputArr[high];
+  int i = low - 1;
+  for (int j = low; j < high; ++j) {
+    if (inputArr[j] <= x) {
+      ++i;
+      swapIndices(inputArr, i, j);
     }
   }
-  swapIndices(inputArr, low, leftWall);
-  return leftWall;
+  ++i;
+  swapIndices(inputArr, i, high);
+  return i;
 }
 
+// Implement tail recursive quick sort function from CLRS
 void doQuickSort(int* const inputArr, int low, int high) {
-  if (low < high) {
+  while (low < high) {
     int pivot = partition(inputArr, low, high);
-    doQuickSort(inputArr, low, pivot);
-    doQuickSort(inputArr, pivot + 1, high);
+    doQuickSort(inputArr, low, pivot - 1);
+    low = pivot + 1;
   }
 }
 
