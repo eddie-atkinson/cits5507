@@ -202,8 +202,8 @@ void checkSortingAlg(int* (*sortingFunc)(int*, int), char* algorithmName) {
   free(runTimes);
 }
 void checkSortingAlgs() {
-  // checkSortingAlg(bubbleSort, "bubble_sort");
-  // printf("\n");
+  checkSortingAlg(bubbleSort, "bubble_sort");
+  printf("\n");
   checkSortingAlg(mergeSort, "merge_sort");
   printf("\n");
   checkSortingAlg(quickSort, "quick_sort");
@@ -211,9 +211,9 @@ void checkSortingAlgs() {
 }
 
 int main(int argc, char** argv) {
-  // checkTrivialLoops();
-  // printf("\n");
-  // checkNonTrivialLoops();
+  checkTrivialLoops();
+  printf("\n");
+  checkNonTrivialLoops();
   printf("\n");
   checkSortingAlgs();
 
