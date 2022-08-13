@@ -6,7 +6,10 @@
 
 #include "sort.h"
 
+// You may need to tweak this number depending on how much RAM your OS allocates
+// to processes
 #define N_LOOPS 20
+
 // Use a consistent random seed so that results are comparable
 #define RANDOM_SEED 42
 /*
