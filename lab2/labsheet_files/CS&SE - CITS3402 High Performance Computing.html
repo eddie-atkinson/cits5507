@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>CS&amp;SE - CITS3402 High Performance Computing</title>
+</head>
+
+<body vlink="#0000ff" link="#0000ff" bgcolor="#ffffff">
+
+<!--i<
+<table cellpadding=0 cellspacing=0 width="90%"><tr>
+  <!--  <td><img src="/images/fecmbanner-new.gif" alt="Faculty banner"></td> -->
+    
+	<h3>&nbsp;<br>CITS3402 High Performance Computing<br>
+	    Laboratory Sheet 2</h3>
+    
+
+
+<!--<h3>CITS3402 High Performance Computing</h3>-->
+
+<hr size="1" noshade="noshade">
+
+<h3>First OpenMP program</h3>
+
+The aim of this lab is to develop our first OpenMP program and write some non-trivial OpenMP programs. We will 
+use a few OpenMP constructs and functions that are in fact very powerful for parallelising most C programs. 
+Although we will use further constructs in the future labs and also in the project. You can compile 
+openmp programs by using the compiler flag <tt>gcc -fopenmp file.c </tt>
+
+<ul>
+<li> For the time being, we will live with hyperthreading if it is enabled in the machine you are working on. 
+If you are working at home, search the internet to see how to turn off hyperthreading. You can also 
+search for a command that will enable you to see the number of (physical and logical) cores in your machine. 
+We will soon have a machine 
+that you will be  able to <tt>ssh</tt> into and run your code without hyperthreading. 
+You can also look <a href="https://www.cyberciti.biz/faq/linux-display-cpu-information-number-of-cpus-and-their-speed/">here</a>.</li>
+<br>
+<li> Use the  <tt>#pragma omp parallel</tt> and <tt>omp_get_thread_num()</tt> in this exercise. 
+Write a multi-threaded program in which each thread will write its thread number and some meaningful 
+message. Run the program several time. Do you see the same ordering of the print statements? 
+The scheduling of the CPUs are actually non-deterministic if there are other processes in the system. 
+Hence the ordering of the print statements should be random (although there are other factors too). </li>
+<br>
+<li>Now modify the program so that one or more threads sleep for some time. Use the <tt>sleep(1)</tt> call. 
+This is a system call that makes a thread to sleep. How do you choose a particular thread to sleep? </li>
+You can do this in an <tt>if</tt> statement using the <tt> omp_get_thread_num()</tt> directive.
+What is the ordering of the print statements now?  <br><br>
+
+<li> Time your C program. We have learnt how to time a C code in the last lab. You can 
+print the time as a floating point number, e.g., 
+<tt>printf("time spent=%10.6f\n",time_spent);</tt> , this means 10 total characters, and 6 characters 
+after the decimal, which is sufficient for us.</li> <br>
+
+<li>Most probably you will get all 0s if you time your C code, as our code is doing almost nothing. We have to make 
+our code do some computation to get some non-zero time. </li>
+<br>
+
+<li> Now write a C program where you will change the number of threads used by <tt>omp_set_num_threads(n)</tt>
+directive. This directive should appear before a <tt>#pragma omp parallel</tt> directive and then the 
+parallel region will be executed by <tt>n</tt> threads, where <tt>n</tt> is an integer. There is usually a limit 
+how many threads you can launch from a process in a linux system. I have tested up to 512 threads in my machine, 
+but we will work with smaller number of threads.</li>
+
+<br>
+<li>The way to parallelize a <tt>for</tt> loop is to use the <tt>#pragma omp  for</tt> directive. So your program 
+will look like: <br>
+
+<tt> 
+int main()<br>
+{<br>
+
+.....<br>
+
+omp_set_num_threads(n);<br>
+
+#pragma omp parallel<br>
+{<br>
+
+#pragma omp  for<br>
+
+{<br>
+
+for(...)<br>
+
+}<br>
+
+}<br>
+
+}<br>
+</tt>
+
+You have to of course include <tt>omp.h</tt> along with other include files. OpenMP divides the 
+<tt>for</tt> loop  into equal parts (except the last part) depending on the number of threads you are using. 
+Each part behaves like an independent <tt>for </tt> loop and is executed by a separate thread. 
+</li>
+<br>
+
+<li> Now write a program that adds floating point numbers stored in a large array. This is our first non-trivial OpenMP 
+program. Each thread will use a local variable called <tt>localSum</tt> to store the sum that it computes in its part 
+of the for loop. Hence, we have to make the variable <tt>localSum</tt> a <tt>private</tt> variable for each thread. 
+This is done by changing the <tt> #pragma omp parallel</tt> to <br><tt> #pragma omp parallel private(localSum)</tt>. 
+The rest of the code will be similar to what you would otherwise write for summing numbers in a loop. Use the 
+<tt>localSum</tt> variable to store the sum of each thread. Remember, each thread has its own private copy of <tt>localSum</tt>
+variable now. </li>
+<br>
+
+<li> Use large arrays by increasing the array size and filling it up with random floating point numbers. You will 
+eventually get a run time error (most probably a segmentation fault) as there is a limit how large 
+an array you can allocate in a C program. Remember all such allocations are done in the  stack (see the video on 
+"Stack and heap" that I have posted on YouTube). It is possible to allocate larger arrays through dynamic allocation 
+(<tt>malloc()</tt>) that we will discuss later. </li>
+<br>
+
+<li>Now print the local sums. Write a separate program and check whether the sum of all the localSum variables is 
+indeed equal to the sum of the elements of the array.</li>
+<br>
+
+<li> Time your program. You should get some reasonable time (non-zero) for very large arrays. Increase the 
+number of threads, and check the timing. Do you see any change in timing with increasing number of threads? 
+Why? </li>
+<br>
+
+<li> Write a separate program where you call a sorting function from 
+inside a for loop with a large number of iterations. 
+You can make the sorting program that you wrote in the last lab as a 
+function and call that function from inside 
+the for loop. This is to introduce more work for the threads. Each 
+iteration of the for loop will sort the same array, 
+as we are just interested in making the threads work harder. Time this 
+program and do a similar analysis for sorting 
+larger and larger arrays many many times (increasing number of 
+iterations of the for loop), and also with diferent number of threads. 
+</li>  
+ 
+
+</ul>
+
+
+<p><b>Amitava Datta<br>
+August 2022</b>
+  
+  
+</p><p>
+
+</p><hr size="1" noshade="noshade">
+
+<table width="100%"><tbody><tr>
+<td width="1"><a href="https://www.csse.uwa.edu.au/"><img src="CS&amp;SE%20-%20CITS3402%20High%20Performance%20Computing_files/deptlogo.gif" alt="Visit the UWA Computer Science home page" border="0" align="left"></a>
+</td>
+<td nowrap="nowrap">School of Computer Science &amp; Software Engineering<br>
+    The University of Western Australia<br>
+    Crawley, Western Australia, 6009.<br>
+    Phone: +61 8 9380 2716 - Fax: +61 8 9380 1089.<br>
+    CRICOS provider code 00126G<br>
+</td>
+<td>
+<a href="https://validator.w3.org/check/referer"><img src="CS&amp;SE%20-%20CITS3402%20High%20Performance%20Computing_files/valid-html401.png" alt="Valid HTML 4.01!" width="88" height="31" border="0"></a>
+</td>
+</tr></tbody></table>
+
+
+
+
+<div style="position: static !important;"></div></body></html>
